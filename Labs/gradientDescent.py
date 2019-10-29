@@ -160,43 +160,44 @@ def newton_descent(f, x0, tol=1e-5, maxiter=100):
     
     return xf, iterations
 
-def trust_region(f, x0, r, min_quality, max_r=np.inf, tol=1e-5, maxiter=100):
+def trust_region(f, x0, r, min_quality=0.25, max_r=np.inf, tol=1e-5, maxiter=1000):
     
     i = 0
     xk = x0
     fk = f(xk)
     gk = grad(f, xk)
-    Bk = grad(f, xk)
+    Bk = hess(f, xk)
     
-    while i > maxiter and np.linalg.norm(grad_f, np.inf) > tol:
+    while i < maxiter and np.linalg.norm(gk, np.inf) > tol:
     
         mk = lambda d : fk + np.dot(gk, d) + 0.5 * np.dot(d, np.dot(Bk, d))
         dk = cauchy_point(gk, Bk, r)
-        quality = (fk - f(xk + dk))/(fk - m(dk))
+        quality = (fk - f(xk + dk))/(fk - mk(dk))
 
         if quality < 0.25:
             r = 0.25 * r
-        elif quality > 0.75 and r - np.norm(dk) < 1e-10 :
+        elif quality > 0.75 and r - np.linalg.norm(dk) < 1e-10 :
             r = min(2*r, max_r)
 
         if quality > min_quality:
-            xk += dk
+            xk = xk + dk
             fk = f(xk)
             gk = grad(f, xk)
-            Bk = grad(f, xk)
+            Bk = hess(f, xk)
+            i += 1
             
-        i += 1
         
-    return xk
+        
+    return xk, i
 
 def cauchy_point(gk, Bk, r):
     gk_norm = np.linalg.norm(gk) 
     p = -(r/gk_norm) * gk
     
-    pBp = np.dot(p, np.dot(Q, p)) 
+    pBp = np.dot(p, np.dot(Bk, p)) 
     
-    alpha = min(1, r * gk_norm / pBp) if pBp > 0 else 1
+    alpha = min(1, (r * gk_norm / pBp)) if pBp > 0 else 1
     
-    p *= alpha
+    p *= 0.99 * alpha
     
     return p
