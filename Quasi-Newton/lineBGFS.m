@@ -17,14 +17,18 @@ function [xf, iter] = lineBGFS(f, x0, tol, maxiter)
         gamma = gnew - gk;
         rho = 1/dot(gamma, s);
         
+        
+        % BGFS Hk - Verificar con formula
+%         HkGamma = Hk*gamma*rho;
+%         sHkGammaT = s*HkGamma';
+%         Hk = -(sHkGammaT + sHkGammaT') + (rho*(dot(gamma, HkGamma) + 1)*s)*s';
+        % Hk estupido
+        sgamma_shift = (speye(n) - rho * (gamma*s'));
+        Hk = sgamma_shift*Hk*sgamma_shift + rho * (s*s');
+        
         xf = xf + s;
         gk = gnew;
-        % BGFS Hk - Verificar con formula
-        HkGamma = Hk*gamma*rho;
-        sHkGammaT = s*HkGamma';
-        Hk = -(sHkGammaT + sHkGammaT') + (rho*(dot(gamma, HkGamma) + 1)*s)*s';
         
-        
-        iter  = iter+1;
+        iter  = iter + 1;
     end
 end
