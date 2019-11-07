@@ -1,4 +1,4 @@
-function [grad_f] = gradient(f, x)
+function [grad_f] = grad(f, x)
 %GRADIENT Approximate the gradient of f at x
 %   Input:
 %       f: Anonymous function

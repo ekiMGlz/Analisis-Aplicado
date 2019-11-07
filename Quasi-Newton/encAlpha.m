@@ -10,7 +10,7 @@ function [alpha, gnew] = encAlpha(f, xk, dk, gk)
         alpha = alpha * 0.5;
     end
     
-    gnew = gradient(f, xk + alpha*dk);
+    gnew = grad(f, xk + alpha*dk);
     
     assert(dot(gnew, dk) >= c2*gTd, "No se satisface W2")
     

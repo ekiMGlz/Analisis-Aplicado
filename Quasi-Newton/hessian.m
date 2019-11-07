@@ -5,7 +5,7 @@ function [hess_f] = hessian(f,x)
 %       x: Function arguments
 %   Output:
 %       hess_f: Hessian of f at x
-%
+% 
 
     if ~iscolumn(x)
         x = x';
