@@ -1,8 +1,18 @@
-A = pascal(4);
-b = -ones(4, 1);
-f = @(x) 0.5*x'*A*x + dot(b, x) + 1;
-x0 = [4; 4; 4; 4];
+[ts, ys] = getpts()
+[r, J, nump, model] = fRlinear(ts, ys);
+x0 = ones(nump,1);
+tol = 1e-5;
+maxIter = 500;
+[xk, iter] = GaussNewton( r, x0, tol, maxIter, J )
 
-[xf, iters] = lineBGFS(f, x0, 1e-5, 1000)
-%[x0, msg] = TRSR1(f, x0, 1000, 1e-5)
-[xf, iters] = limBGFS(f, x0, 1e-5, 1000, 3)
+Df = J(xk)'*r(xk);
+gradfApprox = norm(Df, 'inf')
+
+
+%% plot
+scatter( ts, ys )
+hold on
+errL2  = norm(r(xk))
+errinf = norm(r(xk), 'inf')
+fplot( @(t)  model(xk, t), [min(ts), max(ts)] )
+hold off
