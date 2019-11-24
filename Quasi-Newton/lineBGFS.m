@@ -12,7 +12,7 @@ function [xf, iter] = lineBGFS(f, x0, tol, maxiter)
     while norm(gk, 'inf') > tol && iter < maxiter
         dk = -Hk*gk;
 
-        [alpha, gnew] = encAlpha(f, xf, dk, gk);
+        [alpha, gnew] = lineSearch(f, xf, dk, gk);
 
         s = alpha*dk;
         gamma = gnew - gk;

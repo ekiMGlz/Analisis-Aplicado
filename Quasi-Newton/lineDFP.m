@@ -4,13 +4,13 @@ function [xf, iter] = lineDFP(f, x0, tol, maxiter)
 
     iter = 0;
     xf = x0;
-    gk = gradient(f, xf);
+    gk = grad(f, xf);
     Hk = eye(length(gk));
     
     while norm(gk, 'inf') > tol && iter < maxiter
         dk = -Hk*gk;
         
-        [alpha, gnew] = encAlpha(f, xf, dk, gk);
+        [alpha, gnew] = lineSearch(f, xf, dk, gk);
         
         s = alpha*dk;
         gamma = gnew - gk;

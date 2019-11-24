@@ -16,7 +16,7 @@ function [x, msg] = TRSR1(f, x0, itmax, tol)
         x_k = x0';
     end
     
-    g_k = gradient(f, x_k);
+    g_k = grad(f, x_k);
     H_k = speye(n);
     B_k = speye(n);
     
@@ -49,9 +49,9 @@ function [x, msg] = TRSR1(f, x0, itmax, tol)
         if quality > eta
             
             x_k = x_k + s_k;
-            g_new = gradient(f, x_k);
+            g_new = grad(f, x_k);
             
-            % If seacnt eq is met, then update H_k and B_k
+            % If secant eq is met, then update H_k and B_k
             gamma = (g_new - g_k);
             gamma_shift = gamma - B_k*s_k;
             dot_gammashift_s = dot(gamma_shift, s_k);

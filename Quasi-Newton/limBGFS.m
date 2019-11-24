@@ -14,7 +14,7 @@ function [xf, iter] = limBGFS(f, x0, tol, maxiter, m)
     
     while norm(gk, 'inf') > tol && iter < maxiter
         
-        [alpha, gnew] = encAlpha(f, xf, dk, gk);
+        [alpha, gnew] = lineSearch(f, xf, dk, gk);
         
         % Actualizar S, G
         S(:, 2:end) = S(:, 1:end-1);
@@ -30,7 +30,8 @@ function [xf, iter] = limBGFS(f, x0, tol, maxiter, m)
         else
             dk = -calcHg(S, G, gnew);
         end
-        
+
+
         xf = xf + S(:, 1);
         gk = gnew;
         
@@ -40,7 +41,7 @@ end
 function [q] = calcHg(S, G, gnew)
     q = gnew;
     m = length(S(1, :));
-    rhos = 1./dot(S, G, 1);
+    rhos = 1 ./ dot(S, G, 1);
     alphas = zeros(m, 1);
     
     for i = 1:m
